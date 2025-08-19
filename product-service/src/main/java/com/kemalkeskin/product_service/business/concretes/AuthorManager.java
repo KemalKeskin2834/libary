@@ -1,0 +1,76 @@
+package com.kemalkeskin.product_service.business.concretes;
+
+import com.kemalkeskin.product_service.business.abstracts.AuthorService;
+import com.kemalkeskin.product_service.business.businessRules.AuthorBusinessRules;
+import com.kemalkeskin.product_service.business.dtoS.requests.AuthorRequest;
+import com.kemalkeskin.product_service.business.dtoS.responses.AuthorResponse;
+import com.kemalkeskin.product_service.core.mapper.ModelMapperService;
+import com.kemalkeskin.product_service.core.utility.MessageProducer;
+import com.kemalkeskin.product_service.entities.Author;
+import com.kemalkeskin.product_service.repository.AuthorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class AuthorManager implements AuthorService {
+
+
+    private AuthorRepository authorRepository;
+    private ModelMapperService modelMapperService;
+    private MessageProducer messageProducer;
+    private AuthorBusinessRules authorBusinessRules;
+
+    @Autowired
+    public AuthorManager(AuthorRepository authorRepository, ModelMapperService modelMapperService,AuthorBusinessRules authorBusinessRules,MessageProducer messageProducer) {
+        this.authorRepository = authorRepository;
+        this.modelMapperService = modelMapperService;
+        this.messageProducer=messageProducer;
+        this.authorBusinessRules=authorBusinessRules;
+    }
+
+    @Override
+    public List<AuthorResponse> listBooks() {
+        return authorRepository.findAll().stream().map(author->modelMapperService.forResponse().map(author, AuthorResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public AuthorResponse getById(int id) {
+        this.authorBusinessRules.checkFoundId(id);
+        Author author=this.authorRepository.findById(id).get();
+        return  modelMapperService.forResponse().map(author, AuthorResponse.class);
+
+    }
+
+    @Override
+    @Transactional
+    public void addAuthor(AuthorRequest authorRequest) {
+        //this.authorBusinessRules.checkFoundAuthorName(authorRequest.getAuthorName());
+        Author author=this.modelMapperService.forRequest().map(authorRequest,Author.class);
+        this.authorRepository.save(author);
+
+        messageProducer.sendMessage("new author saved: "+authorRequest.getAuthorName());
+
+    }
+
+    @Override
+    public void updateAuthor(int id, AuthorRequest authorRequest) {
+        this.authorBusinessRules.checkFoundId(id);
+      //this.authorBusinessRules.checkFoundAuthorName(authorRequest.getAuthorName());
+        Author authorUpdate=this.authorRepository.findById(id).get();
+        modelMapperService.forRequest().map(authorRequest,authorUpdate);
+        this.authorRepository.save(authorUpdate);
+        messageProducer.sendMessage("updated author id: "+id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(int id) {
+        this.authorBusinessRules.checkFoundId(id);
+        this.authorRepository.deleteById(id);
+        messageProducer.sendMessage("deleted author: "+id);
+    }
+}
