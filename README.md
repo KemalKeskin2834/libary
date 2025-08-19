@@ -1,5 +1,5 @@
 
-[Go to API Endpoints](english-verison)
+[Go to API Endpoints](english-version)
 
 
 # Kitap Kiralama Projesi
@@ -66,7 +66,7 @@ Tüm endpointler /api/ ile başlar:
 - Rented Books: http://localhost:8080/api/rented
 
 
-English verison
+English version
 
 # Book Rental Project
 The Book Rental Project is a Spring Boot application developed to manage and track books available for rent.
