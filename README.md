@@ -1,5 +1,5 @@
 
-[Go to API Endpoints](english-version)
+[Go to English Version](english-version)
 
 
 # Kitap Kiralama Projesi
