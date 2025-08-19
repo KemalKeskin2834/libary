@@ -1,5 +1,5 @@
 
-[Go to English Version](english-version)
+[Go to English Version](#book-rental-project)
 
 
 # Kitap Kiralama Projesi
