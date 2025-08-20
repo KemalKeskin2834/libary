@@ -34,16 +34,45 @@ git clone <https://github.com/KemalKeskin/kitap-kiralama-projesi.git>
 cd kitap-kiralama-projesi
 ```
 
+## Docker ile RabbitMQ kurulumu
+
+Proje klasörüne docker-compose.yml dosyası ekleyin: 
+
+```bash
+version: "3.8"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # Uygulamanın bağlandığı port
+      - "15672:15672"   # Yönetim paneli portu
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - rabbitmq_net
+
+networks:
+  rabbitmq_net:
+    driver: bridge
+```
+
+## Docker ile RabbitMQ ayağa kaldırmak için
+
+Terminale aşağıdaki kodu yazınız:
+
+```bash
+docker compose up -d
+```
+
 ## Maven ile projeyi çalıştırın:
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
 
-## Docker ile rabbitMQ ayağa kaldırmak için
-```bash
-docker compose up -d
-```
+
 
 ## Testler
 
@@ -65,6 +94,46 @@ Tüm endpointler /api/ ile başlar:
 - Authors: http://localhost:8080/api/authors
 
 - Rented Books: http://localhost:8080/api/rented
+
+
+  
+## Ek bilgiler
+
+Tüm bu bilgiler projede bulunan src/main/resources/application.properties dosyasında bulunmaktadır
+
+Database Bilgileri:
+
+```bash
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update 
+spring.jpa.hibernate.show-sql=true
+spring.datasource.url=jdbc:postgresql://localhost:5432/rentedbook
+spring.datasource.username=postgres
+spring.datasource.password=54321
+spring.jpa.properties.javax.persistence.validation.mode = none
+```
+
+RabbitMQ yapılandırması ve erişim bilgileri
+
+```bash
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+
+rabbitmq.exchange=appExchange
+rabbitmq.queue=appQueue
+rabbitmq.routingkey=appRoutingKey
+```
+
+Spring security kullanıcı adı ve şifre:
+
+```bash
+spring.security.user.name=kemal
+spring.security.user.password=user123
+```
+
+
 
 
 
@@ -100,16 +169,43 @@ git clone <https://github.com/KemalKeskin/kitap-kiralama-projesi.git>
 cd kitap-kiralama-projesi
 ```
 
+## Installing RabbitMQ with Docker
+
+Add a docker-compose.yml file to the project directory:
+
+```bash
+version: "3.8"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # Uygulamanın bağlandığı port
+      - "15672:15672"   # Yönetim paneli portu
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - rabbitmq_net
+
+networks:
+  rabbitmq_net:
+    driver: bridge
+```
+
+## Start RabbitMQ with Docker:
+Type the following command into the terminal:
+```bash
+docker compose up -d
+```
+
 ## Run the project with Maven:
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
 
-## Start RabbitMQ with Docker:
-```bash
-docker compose up -d
-```
+
 
 ## Tests
 
@@ -131,8 +227,44 @@ All endpoints start with /api/:
 
 - Rented Books: http://localhost:8080/api/rented
 
+  
 
 
+## Additional Information
+
+All of this information can be found in the src/main/resources/application.properties file in the project.
+
+Database information:
+
+```bash
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update 
+spring.jpa.hibernate.show-sql=true
+spring.datasource.url=jdbc:postgresql://localhost:5432/rentedbook
+spring.datasource.username=postgres
+spring.datasource.password=54321
+spring.jpa.properties.javax.persistence.validation.mode = none
+```
+
+RabbitMQ configuration and access credentials
+
+```bash
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+
+rabbitmq.exchange=appExchange
+rabbitmq.queue=appQueue
+rabbitmq.routingkey=appRoutingKey
+```
+
+Spring security user name and password:
+
+```bash
+spring.security.user.name=kemal
+spring.security.user.password=user123
+```
 
 
 
