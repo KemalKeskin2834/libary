@@ -3,10 +3,12 @@ package com.kemalkeskin.product_service.business.concretes;
 import com.kemalkeskin.product_service.business.abstracts.AuthorService;
 import com.kemalkeskin.product_service.business.businessRules.AuthorBusinessRules;
 import com.kemalkeskin.product_service.business.dtoS.requests.AuthorRequest;
+import com.kemalkeskin.product_service.business.dtoS.responses.AuthorIsBooksResponse;
 import com.kemalkeskin.product_service.business.dtoS.responses.AuthorResponse;
 import com.kemalkeskin.product_service.core.mapper.ModelMapperService;
 import com.kemalkeskin.product_service.core.utility.MessageProducer;
 import com.kemalkeskin.product_service.entities.Author;
+import com.kemalkeskin.product_service.entities.Book;
 import com.kemalkeskin.product_service.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class AuthorManager implements AuthorService {
     }
 
     @Override
-    public List<AuthorResponse> listBooks() {
+    public List<AuthorResponse> listAuthors() {
         return authorRepository.findAll().stream().map(author->modelMapperService.forResponse().map(author, AuthorResponse.class)).collect(Collectors.toList());
     }
 
@@ -48,7 +50,7 @@ public class AuthorManager implements AuthorService {
     @Override
     @Transactional
     public void addAuthor(AuthorRequest authorRequest) {
-        //this.authorBusinessRules.checkFoundAuthorName(authorRequest.getAuthorName());
+        this.authorBusinessRules.checkFoundAuthorName(authorRequest.getAuthorName());
         Author author=this.modelMapperService.forRequest().map(authorRequest,Author.class);
         this.authorRepository.save(author);
 
@@ -58,11 +60,13 @@ public class AuthorManager implements AuthorService {
 
     @Override
     public void updateAuthor(int id, AuthorRequest authorRequest) {
+
         this.authorBusinessRules.checkFoundId(id);
-      //this.authorBusinessRules.checkFoundAuthorName(authorRequest.getAuthorName());
+        this.authorBusinessRules.checkFoundAuthorName(authorRequest.getAuthorName());
         Author authorUpdate=this.authorRepository.findById(id).get();
         modelMapperService.forRequest().map(authorRequest,authorUpdate);
         this.authorRepository.save(authorUpdate);
+
         messageProducer.sendMessage("updated author id: "+id);
     }
 
@@ -72,5 +76,25 @@ public class AuthorManager implements AuthorService {
         this.authorBusinessRules.checkFoundId(id);
         this.authorRepository.deleteById(id);
         messageProducer.sendMessage("deleted author: "+id);
+    }
+
+    @Override
+    public List<AuthorIsBooksResponse> authorIsBooks() {
+         List<Author> authors=authorRepository.findAll();
+         List<AuthorIsBooksResponse>authorBookDemos=authors.stream().map(author->{
+
+             AuthorIsBooksResponse response=new AuthorIsBooksResponse();
+             response.setId(author.getId());
+             response.setAuthorName(author.getAuthorName());
+
+             List<String>bookName=author.getBookList().stream().map(Book::getBookName).collect(Collectors.toList());
+
+             response.setBookName(bookName);
+             return response;
+         }).collect(Collectors.toList());
+
+
+
+         return authorBookDemos;
     }
 }

@@ -2,6 +2,7 @@ package com.kemalkeskin.product_service.api;
 
 import com.kemalkeskin.product_service.business.abstracts.AuthorService;
 import com.kemalkeskin.product_service.business.dtoS.requests.AuthorRequest;
+import com.kemalkeskin.product_service.business.dtoS.responses.AuthorIsBooksResponse;
 import com.kemalkeskin.product_service.business.dtoS.responses.AuthorResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class AuthorControllers {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<AuthorResponse> listBooks(){
-        return authorService.listBooks();
+    public List<AuthorResponse> listAuthors(){
+        return authorService.listAuthors();
     }
 
     @GetMapping("/{id}")
@@ -35,7 +36,7 @@ public class AuthorControllers {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void addBook( @Valid @RequestBody AuthorRequest authorRequest){
+    public void addAuthor( @Valid @RequestBody AuthorRequest authorRequest){
         this.authorService.addAuthor(authorRequest);
     }
 
@@ -49,6 +50,12 @@ public class AuthorControllers {
     @ResponseStatus(HttpStatus.OK)
     public void deleteById(@PathVariable int id){
         this.authorService.deleteById(id);
+    }
+
+
+    @GetMapping("/books")
+    public List<AuthorIsBooksResponse>authorIsBooks(){
+        return authorService.authorIsBooks();
     }
 
 }

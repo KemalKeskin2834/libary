@@ -20,22 +20,16 @@ public class AuthorBusinessRules {
 
     public void checkFoundId(int id){
 
-        Optional<Author> author=authorRepository.findById(id);
-
-        if(!author.isPresent()){
+        if(!authorRepository.findById(id).isPresent()){
             throw new BusinessException("Don't found id= "+ id);
         }
     }
-/*
+
     public void checkFoundAuthorName(String authorName){
-
-        Author author=authorRepository.existsAuthorName(authorName);
-
-        if(Objects.nonNull(author)){
+        if(authorRepository.existsByAuthorName(authorName)){
             throw new BusinessException("name is already taken= "+ authorName);
         }
     }
-*/
 
 
 }

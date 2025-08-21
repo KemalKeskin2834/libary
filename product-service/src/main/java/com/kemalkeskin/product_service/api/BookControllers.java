@@ -59,4 +59,12 @@ public class BookControllers {
         return bookService.sortedPageNumbers();
     }
 
+
+
+    @GetMapping("/rentablebooks")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookResponse>rentableBooks(){
+        return this.bookService.rentableBooks();
+    }
+
 }

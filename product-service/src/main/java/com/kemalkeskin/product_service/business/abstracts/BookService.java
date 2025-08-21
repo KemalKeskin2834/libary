@@ -19,4 +19,6 @@ public interface BookService {
     void deleteById(int id);
 
     List<BookResponse>sortedPageNumbers();
+
+    List<BookResponse>rentableBooks();
 }

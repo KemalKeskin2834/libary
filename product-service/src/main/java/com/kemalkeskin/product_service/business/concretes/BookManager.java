@@ -86,4 +86,9 @@ public class BookManager implements BookService {
         List<BookResponse>bookResponses=books.stream().map(book->modelMapperService.forResponse().map(book,BookResponse.class)).collect(Collectors.toList());
         return bookResponses;
     }
+
+    @Override
+    public List<BookResponse> rentableBooks() {
+        return bookRepository.findByStatusFalse().stream().map(book ->modelMapperService.forResponse().map(book,BookResponse.class)).collect(Collectors.toList());
+    }
 }
